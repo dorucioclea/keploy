@@ -331,6 +331,12 @@ func (r *replayer) RunTestSet(ctx context.Context, testSetID string, testRunID s
 			utils.LogError(r.logger, err, "failed to get unfiltered mocks")
 			break
 		}
+
+		loopErr = r.instrumentation.SetMocks(runTestSetCtx, appID, filteredMocks, unfilteredMocks)
+		if loopErr != nil {
+			utils.LogError(r.logger, err, "failed to set mocks")
+			break
+		}
 		println("=======================================================")
 		fmt.Printf("[Test-%v]SortedTcsMocks: ->\n", n)
 		for _, mock := range filteredMocks {
@@ -342,12 +348,6 @@ func (r *replayer) RunTestSet(ctx context.Context, testSetID string, testRunID s
 			fmt.Printf("Mock: %v\n", mock.Name)
 		}
 		println("=======================================================")
-
-		loopErr = r.instrumentation.SetMocks(runTestSetCtx, appID, filteredMocks, unfilteredMocks)
-		if loopErr != nil {
-			utils.LogError(r.logger, err, "failed to set mocks")
-			break
-		}
 
 		started := time.Now().UTC()
 		resp, loopErr := r.SimulateRequest(runTestSetCtx, appID, testCase, testSetID)
