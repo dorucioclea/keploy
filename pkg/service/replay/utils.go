@@ -73,3 +73,33 @@ func (t *testUtils) SimulateRequest(ctx context.Context, _ uint64, tc *models.Te
 	}
 	return nil, nil
 }
+
+type testStatusUtil struct {
+	logger   *zap.Logger
+	path     string
+	mockName string
+}
+
+func NewTestStatusUtil(logger *zap.Logger, path, mockName string) TestResult {
+	return &testStatusUtil{
+		path:     path,
+		logger:   logger,
+		mockName: mockName,
+	}
+}
+
+func (t *testStatusUtil) TestRunStatus(status bool, testSetID string) {
+	if status {
+		t.logger.Debug("Test case passed for", zap.String("testSetID", testSetID))
+	} else {
+		t.logger.Debug("Test case failed for", zap.String("testSetID", testSetID))
+	}
+}
+
+func (t *testStatusUtil) MockName() string {
+	return t.mockName
+}
+
+func (t *testStatusUtil) MockFile(testSetID string) {
+	t.logger.Debug("Mock file for test set", zap.String("testSetID", testSetID))
+}
