@@ -88,7 +88,11 @@ func NewTestStatusUtil(logger *zap.Logger, path, mockName string) TestResult {
 	}
 }
 
-func (t *testStatusUtil) TestRunStatus(status bool, testSetID string) {
+func (t *testStatusUtil) TestRunStatus(ctx context.Context, status bool, testSetID string) {
+	if err := ctx.Err(); err != nil {
+		t.logger.Debug("Operation cancelled or timed out", zap.Error(err))
+		return
+	}
 	if status {
 		t.logger.Debug("Test case passed for", zap.String("testSetID", testSetID))
 	} else {
@@ -100,6 +104,10 @@ func (t *testStatusUtil) MockName() string {
 	return t.mockName
 }
 
-func (t *testStatusUtil) MockFile(testSetID string) {
+func (t *testStatusUtil) MockFile(ctx context.Context, testSetID string) {
+	if err := ctx.Err(); err != nil {
+		t.logger.Debug("Operation cancelled or timed out", zap.Error(err))
+		return
+	}
 	t.logger.Debug("Mock file for test set", zap.String("testSetID", testSetID))
 }

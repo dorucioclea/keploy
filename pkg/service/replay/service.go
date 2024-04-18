@@ -65,7 +65,7 @@ type RequestEmulator interface {
 	SimulateRequest(ctx context.Context, appID uint64, tc *models.TestCase, testSetID string) (*models.HTTPResp, error)
 }
 type TestResult interface {
-	TestRunStatus(status bool, testSetID string)
+	TestRunStatus(ctx context.Context, status bool, testSetID string)
 	MockName() string
-	MockFile(testSetID string)
+	MockFile(ctx context.Context, testSetID string)
 }
